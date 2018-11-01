@@ -4,7 +4,7 @@ FROM shoepping/jenkins-ssh-slave:18.10.29
 ENV GRADLE_HOME /opt/gradle
 ENV GRADLE_VERSION 4.10.2
 
-
+# https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256
 ARG GRADLE_DOWNLOAD_SHA256=b49c6da1b2cb67a0caf6c7480630b51c70a11ca2016ff2f555eaeda863143a29
 
 RUN apt-get update
