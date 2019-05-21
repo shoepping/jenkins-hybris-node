@@ -7,6 +7,9 @@ ENV GRADLE_VERSION 4.10.2
 # https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256
 ARG GRADLE_DOWNLOAD_SHA256=b49c6da1b2cb67a0caf6c7480630b51c70a11ca2016ff2f555eaeda863143a29
 
+# https://superuser.com/questions/1423486/issue-with-fetching-http-deb-debian-org-debian-dists-jessie-updates-inrelease
+RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+
 RUN apt-get update
 RUN apt-get install -y curl zip wget
 
@@ -24,9 +27,18 @@ RUN add-apt-repository \
 
 RUN apt-get update
 RUN apt-cache madison docker-ce
-RUN apt-get install -y docker-ce=18.06.1~ce~3-0~debian jq
+RUN apt-get install -y \
+	docker-ce=18.06.3~ce~3-0~debian \
+	jq
 
 RUN usermod -aG docker jenkins
+
+ENV DOCKER_COMPOSE_VERSION=1.24.0
+RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+RUN chmod +x /usr/local/bin/docker-compose
+RUN docker-compose --version
+
 
 RUN set -o errexit -o nounset \
 	&& echo "Downloading Gradle" \
@@ -44,7 +56,7 @@ RUN set -o errexit -o nounset \
 
 # groovy installation based on https://github.com/groovy/docker-groovy/blob/master/jdk8/Dockerfile
 ENV GROOVY_HOME /opt/groovy
-ENV GROOVY_VERSION 2.5.5
+ENV GROOVY_VERSION 2.5.7
 
 
 RUN set -o errexit -o nounset \
