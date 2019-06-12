@@ -18,6 +18,7 @@ RUN apt-get install -y \
      ca-certificates \
      curl \
      gnupg2 \
+     python-virtualenv \
      software-properties-common
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 RUN add-apt-repository \
