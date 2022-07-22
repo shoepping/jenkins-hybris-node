@@ -12,7 +12,7 @@ RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://ar
 
 RUN apt-get update
 
-RUN apt-get install -y \
+RUN apt-get install -y --force-yes \
      apt-transport-https \
      ca-certificates \
      curl \
@@ -30,7 +30,7 @@ RUN add-apt-repository \
 
 RUN apt-get update
 RUN apt-cache madison docker-ce
-RUN apt-get install -y \
+RUN apt-get install -y --force-yes \
 	docker-ce=18.06.3~ce~3-0~debian \
 	terraform \
 	jq
