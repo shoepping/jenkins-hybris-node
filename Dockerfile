@@ -9,8 +9,6 @@ ARG GRADLE_DOWNLOAD_SHA256=b49c6da1b2cb67a0caf6c7480630b51c70a11ca2016ff2f555eae
 
 # https://superuser.com/questions/1423486/issue-with-fetching-http-deb-debian-org-debian-dists-jessie-updates-inrelease
 RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
-RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 
 RUN apt-get update
 RUN apt-get install -y curl zip wget
@@ -20,10 +18,12 @@ RUN apt-get install -y \
      ca-certificates \
      curl \
      gnupg2 \
-     terraform \
+     wget \
      python-virtualenv \
      software-properties-common
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 RUN add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/debian \
    $(lsb_release -cs) \
@@ -33,6 +33,7 @@ RUN apt-get update
 RUN apt-cache madison docker-ce
 RUN apt-get install -y \
 	docker-ce=18.06.3~ce~3-0~debian \
+	terraform \
 	jq
 
 RUN usermod -aG docker jenkins
